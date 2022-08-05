@@ -8,7 +8,7 @@ G04 Gerber Generator version 0.2*
 G04 Scale: 100 percent, Rotated: No, Reflected: No *
 G04 Dimensions in millimeters *
 G04 leading zeros omitted , absolute positions ,4 integer and 5 decimal *\n"""
-path = r"C:/Users/lol/Desktop/xxxxxx"
+path = r"C:/Users/Acha/Desktop/gerber_PCB1"
 textFile="""如何进行PCB下单
 
 请查看：
@@ -35,16 +35,23 @@ for file in currentDir:
         os.rename(os.path.join(path,file),os.path.join(path,"Gerber_TopSilkscreenLayer.GTO"))
     if os.path.splitext(file)[-1][1:].lower() == "gts":
         os.rename(os.path.join(path,file),os.path.join(path,"Gerber_TopSolderMaskLayer.GTS"))
+    if os.path.splitext(file)[-1][1:].lower() == "gd1":
+        os.rename(os.path.join(path,file),os.path.join(path,"Drill_Through.GD1"))
+    if os.path.splitext(file)[-1][1:].lower() == "gm1":
+        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_MechanicalLayer1.GM1"))
+    if os.path.splitext(file)[-1][1:].lower() == "gm13":
+        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_MechanicalLayer13.GM13"))
 
-    if file.find("_PCB-PTH")!=-1 or file.find("_PCB-PTH")!=-1:
+
+    if file.find("_PCB-PTH")!=-1:
         os.rename(os.path.join(path,file),os.path.join(path,"Drill_PTH_Through.DRL"))
-    if file.find("_PCB-NPTH")!=-1 or file.find("_PCB-NPTH")!=-1:
+    if file.find("_PCB-NPTH")!=-1:
         os.rename(os.path.join(path,file),os.path.join(path,"Drill_NPTH_Through.DRL"))
-    if file.find("_PCB-In1_Cu")!=-1 or file.find("_PCB-In1_Cu")!=-1:
+    if file.find("_PCB-In1_Cu")!=-1 or file.find(".G1")!=-1:
         os.rename(os.path.join(path,file),os.path.join(path,"Gerber_InnerLayer1.G1"))
-    if file.find("_PCB-In2_Cu")!=-1 or file.find("_PCB-In2_Cu")!=-1:
+    if file.find("_PCB-In2_Cu")!=-1 or file.find(".G2")!=-1:
         os.rename(os.path.join(path,file),os.path.join(path,"Gerber_InnerLayer2.G2"))
-    if file.find("_PCB-Edge_Cuts")!=-1 or file.find("_PCB-Edge_Cuts")!=-1:
+    if file.find("_PCB-Edge_Cuts")!=-1 :
         os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BoardOutlineLayer.GKO"))
 
 currentDir=os.listdir(path)
@@ -55,7 +62,6 @@ for file in currentDir:
         fileData=f.read()
         f.close()
         f=open(os.path.join(path,file),"w")
-        print(fileData)
         f.write(header)
         f.write(fileData)
         f.close()
