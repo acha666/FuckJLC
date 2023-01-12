@@ -1,0 +1,35 @@
+# 此处存放文件头 文件名等配置信息
+
+# 工作目录
+WorkDir: C:\Users\Public\Desktop
+
+# 输出目录，可留空
+DestDir: 
+
+Header: |-
+  G04 EasyEDA Pro v1.9.28, 2023-01-14 19:19:00*
+  G04 Gerber Generator version 0.3*
+
+TextFileName: PCB下单必读.txt
+TextFileContent: |-
+  如何进行PCB下单
+
+  请查看：
+  https://docs.lceda.cn/cn/PCB/Order-PCB
+
+FileName:
+  Outline: Gerber_BoardOutlineLayer.GKO
+  Top_Cu: Gerber_TopLayer.GTL
+  Bottom_Cu: Gerber_BottomLayer.GBL
+  InnerLayer1_Cu: Gerber_InnerLayer1.G1
+  InnerLayer2_Cu: Gerber_InnerLayer2.G2
+  InnerLayer3_Cu: Gerber_InnerLayer3.G3
+  InnerLayer4_Cu: Gerber_InnerLayer4.G4
+  Top_SilkScreen: Gerber_TopSilkscreenLayer.GTO
+  Bottom_SilkScreen: Gerber_BottomSilkscreenLayer.GBO
+  Top_SolderMask: Gerber_TopSolderMaskLayer.GTS
+  Bottom_SolderMask: Gerber_BottomSolderMaskLayer.GBS
+  Top_SolderPaste: Gerber_TopPasteMaskLayer.GTP
+  Bottom_SolderPaste: Gerber_BottomPasteMaskLayer.GBP
+  Drill_Pth: Drill_PTH_Through.DRL
+  Drill_Npth: Drill_NPTH_Through.DRL

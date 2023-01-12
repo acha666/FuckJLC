@@ -1,75 +1,68 @@
-import os
-from tkinter import filedialog
+Warn = """\033[0;31;40m
+=======警告=======
+此脚本仅包含有限的“自动重命名”功能，它：
+- 不会对Gerber文件进行解析
+- 不会验证文件格式是否正确
+- 不会处理钻孔文件
+- 极有可能损坏你的文件或引起生产错误
+- 需要你根据实际情况进行修改
+如果你不知道自己在干什么，请手动修改文件而不是使用脚本
+请编辑此脚本以解除警告
+\033[0m"""
+print(Warn)
+raise Exception("READ THE WARNING")
 
-header="""G04 Layer: TopLayer*
-G04 EasyEDA v6.5.9, 2022-08-01 21:18:00*
-G04 ac5e******************************************aa,10*
-G04 Gerber Generator version 0.2*
-G04 Scale: 100 percent, Rotated: No, Reflected: No *
-G04 Dimensions in millimeters *
-G04 leading zeros omitted , absolute positions ,4 integer and 5 decimal *\n"""
-path = r"C:/Users/Acha/Desktop/gerber_PCB1"
-textFile="""如何进行PCB下单
+import yaml, os, re
 
-请查看：
-https://docs.lceda.cn/cn/PCB/Order-PCB"""
-textFileName="PCB下单必读.txt"
+fconfig = open("config.yaml", "r", encoding="utf-8")
+frule = open("rule.yaml", "r", encoding="utf-8")
+Config = yaml.load(fconfig, Loader=yaml.FullLoader)
+Rule = yaml.load(frule, Loader=yaml.FullLoader)
 
-currentDir=os.listdir(path)
-for file in currentDir:
-    if os.path.splitext(file)[-1][1:].lower() == "gbl":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BottomLayer.GBL"))
-    if os.path.splitext(file)[-1][1:].lower() == "gko":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BoardOutlineLayer.GKO"))
-    if os.path.splitext(file)[-1][1:].lower() == "gbp":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BottomPasteMaskLayer.GBP"))
-    if os.path.splitext(file)[-1][1:].lower() == "gbo":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BottomSilkscreenLayer.GBO"))
-    if os.path.splitext(file)[-1][1:].lower() == "gbs":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BottomSolderMaskLayer.GBS"))
-    if os.path.splitext(file)[-1][1:].lower() == "gtl":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_TopLayer.GTL"))
-    if os.path.splitext(file)[-1][1:].lower() == "gtp":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_TopPasteMaskLayer.GTP"))
-    if os.path.splitext(file)[-1][1:].lower() == "gto":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_TopSilkscreenLayer.GTO"))
-    if os.path.splitext(file)[-1][1:].lower() == "gts":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_TopSolderMaskLayer.GTS"))
-    if os.path.splitext(file)[-1][1:].lower() == "gd1":
-        os.rename(os.path.join(path,file),os.path.join(path,"Drill_Through.GD1"))
-    if os.path.splitext(file)[-1][1:].lower() == "gm1":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_MechanicalLayer1.GM1"))
-    if os.path.splitext(file)[-1][1:].lower() == "gm13":
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_MechanicalLayer13.GM13"))
+WorkDir = Config["WorkDir"]
+DestDir = Config["DestDir"]
+WorkDirFiles = os.listdir(WorkDir)
 
+if not DestDir:
+    DestDir=os.path.join(WorkDir,'output')
+if not os.path.exists(DestDir):
+    os.mkdir(DestDir)
 
-    if file.find("_PCB-PTH")!=-1:
-        os.rename(os.path.join(path,file),os.path.join(path,"Drill_PTH_Through.DRL"))
-    if file.find("_PCB-NPTH")!=-1:
-        os.rename(os.path.join(path,file),os.path.join(path,"Drill_NPTH_Through.DRL"))
-    if file.find("_PCB-In1_Cu")!=-1 or file.find(".G1")!=-1:
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_InnerLayer1.G1"))
-    if file.find("_PCB-In2_Cu")!=-1 or file.find(".G2")!=-1:
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_InnerLayer2.G2"))
-    if file.find("_PCB-Edge_Cuts")!=-1 :
-        os.rename(os.path.join(path,file),os.path.join(path,"Gerber_BoardOutlineLayer.GKO"))
+#创建PCB下单必读文档
+with open(os.path.join(DestDir, Config["TextFileName"]), "w") as textFile:
+    textFile.write(Config["TextFileContent"])
 
-currentDir=os.listdir(path)
-for file in currentDir:
-    fileType=os.path.splitext(file)[-1][1:].lower()
-    if fileType!="txt" and fileType!="py":
-        f=open(os.path.join(path,file),"r")
-        fileData=f.read()
-        f.close()
-        f=open(os.path.join(path,file),"w")
-        f.write(header)
-        f.write(fileData)
-        f.close()
+#检验文件是否齐全/重复匹配
+for key, value in Rule.items():
+    matchFile = []
+    rePattern = re.compile(pattern=value)
 
-file=open(textFileName,"w")
-file.write(textFile)
-file.close()
+    for fileName in WorkDirFiles:
+        if rePattern.search(fileName):
+            matchFile.append(fileName)
 
+    if len(matchFile) < 1:
+        raise Exception(key + "匹配失败")
+    elif len(matchFile) > 1:
+        raise Exception(key + "重复匹配")
+    else:
+        print(key + " -> " + matchFile[0])
 
+#改名和加头操作
+for key, value in Rule.items():
+    matchFile = ""
+    rePattern = re.compile(pattern=value)
 
-    
+    for fileName in WorkDirFiles:
+        if rePattern.search(fileName):
+            matchFile = fileName
+
+    with open(os.path.join(WorkDir, matchFile), "r") as file:
+        fileData = file.read()
+    with open(os.path.join(DestDir, Config["FileName"][key]), "w") as file:
+        file.write(Config["Header"])
+        file.write(fileData)
+
+fconfig.close()
+frule.close()
+exit()
