@@ -1,13 +1,13 @@
 # 此处存放文件头 文件名等配置信息
 
 # 工作目录
-WorkDir: C:\Users\Public\Desktop
+WorkDir: D:\Desktop\FuckJLC\WorkSpace\
 
 # 输出目录，可留空
-DestDir: 
+DestDir: D:\Desktop\FuckJLC\Output\
 
 Header: |-
-  G04 EasyEDA Pro v1.9.28, 2023-01-14 19:19:00*
+  G04 EasyEDA Pro v1.9.28, 2024-08-16 19:19:00*
   G04 Gerber Generator version 0.3*
 
 TextFileName: PCB下单必读.txt
@@ -19,6 +19,9 @@ TextFileContent: |-
 
 FileName:
   Outline: Gerber_BoardOutlineLayer.GKO
+  NPTH: "Drill_NPTH_Through.DRL"
+  PTH: "Drill_PTH_Through.DRL"
+  PTH_Via: "Drill_PTH_Through_Via.DRL"
   Top_Cu: Gerber_TopLayer.GTL
   Bottom_Cu: Gerber_BottomLayer.GBL
   InnerLayer1_Cu: Gerber_InnerLayer1.G1
