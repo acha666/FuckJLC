@@ -43,10 +43,10 @@
 # 适用于 KiCad Altium Designer
 # Top_Cu: (\.gtl|\.GTL)$
 # Bottom_Cu: (\.gbl|\.GBL)$
-# InnerLayer1_Cu: (\.g1|\.G1)$  # 请注意内层后缀名是g1/g2还是g2/g3
-# InnerLayer2_Cu: (\.g2|\.G2)$
- # InnerLayer3_Cu: (\.g3|\.G3)$
- # InnerLayer4_Cu: (\.g4|\.G4)$
+# # InnerLayer1_Cu: (\.g1|\.G1)$  # 请注意内层后缀名是g1/g2还是g2/g3
+# # InnerLayer2_Cu: (\.g2|\.G2)$
+# # InnerLayer3_Cu: (\.g3|\.G3)$
+# # InnerLayer4_Cu: (\.g4|\.G4)$
 # Top_SilkScreen: (\.gto|\.GTO)$
 # Bottom_SilkScreen: (\.gbo|\.GBO)$
 # Top_SolderMask: (\.gts|\.GTS)$
@@ -66,7 +66,7 @@
 # Top_SolderPaste: SPT
 # Bottom_SolderPaste: SPB
 
-#匹配少量 Altium Designer 21-24 的钻孔文件
+# 匹配少量 Altium Designer 21-24 的钻孔文件
 # PTH: ".*[Rr]ound[Hh]oles.*\\.[Tt][Xx][Tt]$"
-#  PTH_Via: ".*Via.*\\.[Tt][Xx][Tt]$"
+# PTH_Via: ".*Via.*\\.[Tt][Xx][Tt]$"
 # NPTH: ".*[Ss]lot[Hh]oles.*\\.[Tt][Xx][Tt]$"
