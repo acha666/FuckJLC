@@ -1,0 +1,19 @@
+project: "Gerber"
+
+# input_dir: C:\Users\Default\Desktop\in
+# output_dir: C:\Users\Default\Desktop\out
+
+# rule_file: rules/rule-kicad-excellon.yml
+
+header: |
+  G04 EasyEDA Pro v2.2.38.9, 2025-05-14 19:19:00*
+  G04 Gerber Generator version 0.3*
+
+read_lines: 40
+
+TextFileName: "PCB下单必读.txt"
+TextFileContent: |
+  如何进行PCB下单
+
+  请查看：
+  https://prodocs.lceda.cn/cn/pcb/order-order-pcb/index.html

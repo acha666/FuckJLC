@@ -1,0 +1,73 @@
+# 1. 顶/底铜
+- filename_pattern: '.*-F_Cu\.gbr$'
+  filetype: TopLayer
+
+- filename_pattern: '.*-B_Cu\.gbr$'
+  filetype: BottomLayer
+
+# 2. 顶/底丝印
+- filename_pattern: '.*-F_Silkscreen\.gbr$'
+  filetype: TopSilk
+
+- filename_pattern: '.*-B_Silkscreen\.gbr$'
+  filetype: BottomSilk
+
+# 3. 顶/底阻焊
+- filename_pattern: '.*-F_Mask\.gbr$'
+  filetype: TopSolderMask
+
+- filename_pattern: '.*-B_Mask\.gbr$'
+  filetype: BottomSolderMask
+
+# 4. 板框
+- filename_pattern: '.*-Edge_Cuts\.gbr$'
+  filetype: Outline
+
+# 5. 内层铜（自定义）
+- filename_pattern: '.*-In1_Cu\.gbr$'
+  filetype: InnerLayer1
+
+- filename_pattern: '.*-In2_Cu\.gbr$'
+  filetype: InnerLayer2
+
+- filename_pattern: '.*-In3_Cu\.gbr$'
+  filetype: InnerLayer3
+
+- filename_pattern: '.*-In4_Cu\.gbr$'
+  filetype: InnerLayer4
+
+# 6. 焊膏层
+- filename_pattern: '.*-F_Paste\.gbr$'
+  filetype: TopPaste
+
+- filename_pattern: '.*-B_Paste\.gbr$'
+  filetype: BottomPaste
+
+# 7. 钻孔 Excellon
+- filename_pattern: '.*-PTH\.drl$'
+  filetype: DrillPTH_Excellon
+  missing_warning: true
+
+- filename_pattern: '.*-NPTH\.drl$'
+  filetype: DrillNPTH_Excellon
+  missing_warning: true
+
+# 8. 钻孔图示（自定义）
+- filename_pattern: '.*-PTH-drl_map\.gbr$'
+  filetype: DrillMapping
+  action: include
+  ext: "gbr"
+  output: "{project}_DrillMapping_PTH.{ext}"
+  missing_warning: false
+
+- filename_pattern: '.*-NPTH-drl_map\.gbr$'
+  filetype: DrillMapping
+  action: include
+  ext: "gbr"
+  output: "{project}_DrillMapping_NPTH.{ext}"
+  missing_warning: false
+
+# 9. KiCad .gbrjob 文件（生产无用，排除）
+- filename_pattern: '.*\.gbrjob$'
+  filetype: Custom
+  action: exclude

@@ -1,0 +1,123 @@
+
+# Board Outline Layer
+Outline:
+  ext: "GKO" # Board Outline Layer (Keep-out outline)
+  output: "{project}_BoardOutlineLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+# Top and Bottom Copper Layers
+TopLayer:
+  ext: "GTL" # Gerber Top Layer (Copper)
+  output: "{project}_TopLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+BottomLayer:
+  ext: "GBL" # Gerber Bottom Layer (Copper)
+  output: "{project}_BottomLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+# Inner Layers
+InnerLayer1:
+  ext: "G1" # Inner Layer 1
+  output: "{project}_InnerLayer1.{ext}"
+  action: "add_header"
+  missing_warning: false
+
+InnerLayer2:
+  ext: "G2" # Inner Layer 2
+  output: "{project}_InnerLayer2.{ext}"
+  action: "add_header"
+  missing_warning: false
+
+InnerLayer3:
+  ext: "G3" # Inner Layer 3
+  output: "{project}_InnerLayer3.{ext}"
+  action: "add_header"
+  missing_warning: false
+
+InnerLayer4:
+  ext: "G4" # Inner Layer 4
+  output: "{project}_InnerLayer4.{ext}"
+  action: "add_header"
+  missing_warning: false
+
+# Silkscreen and Solder Mask Layers
+TopSilk:
+  ext: "GTO" # Top silkscreen (overlay)
+  output: "{project}_TopSilkscreenLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+BottomSilk:
+  ext: "GBO" # Bottom silkscreen
+  output: "{project}_BottomSilkscreenLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+TopSolderMask:
+  ext: "GTS" # Top solder mask
+  output: "{project}_TopSolderMaskLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+BottomSolderMask:
+  ext: "GBS" # Bottom solder mask
+  output: "{project}_BottomSolderMaskLayer.{ext}"
+  action: "add_header"
+  missing_warning: true
+
+# Solder Paste Layers
+TopPaste:
+  ext: "GTP" # Top paste layer
+  output: "{project}_TopPasteMaskLayer.{ext}"
+  action: "add_header"
+  missing_warning: false
+
+BottomPaste:
+  ext: "GBP" # Bottom paste layer
+  output: "{project}_BottomPasteMaskLayer.{ext}"
+  action: "add_header"
+  missing_warning: false
+
+# Drill Files
+# Excellon format
+DrillPTH_Excellon:
+  ext: "DRL" # Plated through-hole drill file
+  output: "Drill_PTH_Through.{ext}"
+  action: "include" # Include content without adding header
+  missing_warning: false # No warning, user should set this in their rules
+
+DrillNPTH_Excellon:
+  ext: "DRL" # Non-plated through-hole drill file
+  output: "Drill_NPTH_Through.{ext}"
+  action: "include"
+  missing_warning: false
+
+# Gerber X2 format
+DrillPTH_GerberX2:
+  ext: "GBR" # Plated through-hole drill file
+  output: "Drill_PTH_Through.{ext}"
+  action: "include"
+  missing_warning: false
+
+DrillNPTH_GerberX2:
+  ext: "GBR" # Non-plated through-hole drill file
+  output: "Drill_NPTH_Through.{ext}"
+  action: "include"
+  missing_warning: false
+
+# Drill Report
+DrillReport:
+  ext: "TXT" # Drill report text file
+  output: "{project}_DrillReport.{ext}"
+  action: "include"
+  missing_warning: false
+
+Custom:
+  ext: "" # No fixed extension (preserve original file extension)
+  output: "{project}_Custom"
+  action: "include"
+  missing_warning: false
