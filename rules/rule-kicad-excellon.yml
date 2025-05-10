@@ -45,29 +45,34 @@
 
 # 7. 钻孔 Excellon
 - filename_pattern: '.*-PTH\.drl$'
-  filetype: DrillPTH_Excellon
-  missing_warning: true
+  filetype: 
+    name: DrillPTH_Excellon
+    missing_warning: true
 
 - filename_pattern: '.*-NPTH\.drl$'
-  filetype: DrillNPTH_Excellon
-  missing_warning: true
+  filetype: 
+    name: DrillNPTH_Excellon
+    missing_warning: true
 
 # 8. 钻孔图示（自定义）
 - filename_pattern: '.*-PTH-drl_map\.gbr$'
-  filetype: DrillMapping
-  action: include
-  ext: "gbr"
-  output: "{project}_DrillMapping_PTH.{ext}"
-  missing_warning: false
+  filetype: 
+    name: DrillMapping_PTH
+    action: include
+    ext: "GBR"
+    output: "{project}_DrillMapping_PTH.{ext}"
+    missing_warning: false
 
 - filename_pattern: '.*-NPTH-drl_map\.gbr$'
-  filetype: DrillMapping
-  action: include
-  ext: "gbr"
-  output: "{project}_DrillMapping_NPTH.{ext}"
-  missing_warning: false
+  filetype: 
+    name: DrillMapping_NPTH
+    action: include
+    ext: "GBR"
+    output: "{project}_DrillMapping_NPTH.{ext}"
+    missing_warning: false
 
 # 9. KiCad .gbrjob 文件（生产无用，排除）
 - filename_pattern: '.*\.gbrjob$'
-  filetype: Custom
-  action: exclude
+  filetype:
+    name: KiCadJobFile
+    action: exclude

@@ -1,84 +1,83 @@
-
 # Board Outline Layer
 Outline:
-  ext: "GKO" # Board Outline Layer (Keep-out outline)
-  output: "{project}_BoardOutlineLayer.{ext}"
+  ext: GKO
+  name: BoardOutlineLayer
   action: "add_header"
   missing_warning: true
 
 # Top and Bottom Copper Layers
 TopLayer:
-  ext: "GTL" # Gerber Top Layer (Copper)
-  output: "{project}_TopLayer.{ext}"
+  ext: GTL
+  name: TopLayer
   action: "add_header"
   missing_warning: true
 
 BottomLayer:
-  ext: "GBL" # Gerber Bottom Layer (Copper)
-  output: "{project}_BottomLayer.{ext}"
+  ext: GBL
+  name: BottomLayer
   action: "add_header"
   missing_warning: true
 
 # Inner Layers
 InnerLayer1:
-  ext: "G1" # Inner Layer 1
-  output: "{project}_InnerLayer1.{ext}"
+  ext: G1
+  name: InnerLayer1
   action: "add_header"
   missing_warning: false
 
 InnerLayer2:
-  ext: "G2" # Inner Layer 2
-  output: "{project}_InnerLayer2.{ext}"
+  ext: G2
+  name: InnerLayer2
   action: "add_header"
   missing_warning: false
 
 InnerLayer3:
-  ext: "G3" # Inner Layer 3
-  output: "{project}_InnerLayer3.{ext}"
+  ext: G3
+  name: InnerLayer3
   action: "add_header"
   missing_warning: false
 
 InnerLayer4:
-  ext: "G4" # Inner Layer 4
-  output: "{project}_InnerLayer4.{ext}"
+  ext: G4
+  name: InnerLayer4
   action: "add_header"
   missing_warning: false
 
 # Silkscreen and Solder Mask Layers
 TopSilk:
-  ext: "GTO" # Top silkscreen (overlay)
-  output: "{project}_TopSilkscreenLayer.{ext}"
+  ext: GTO
+  name: TopSilkscreenLayer
   action: "add_header"
   missing_warning: true
 
 BottomSilk:
-  ext: "GBO" # Bottom silkscreen
-  output: "{project}_BottomSilkscreenLayer.{ext}"
+  ext: GBO
+  name: BottomSilkscreenLayer
   action: "add_header"
   missing_warning: true
 
 TopSolderMask:
-  ext: "GTS" # Top solder mask
-  output: "{project}_TopSolderMaskLayer.{ext}"
+  ext: GTS
+  name: TopSolderMaskLayer
   action: "add_header"
   missing_warning: true
 
 BottomSolderMask:
-  ext: "GBS" # Bottom solder mask
-  output: "{project}_BottomSolderMaskLayer.{ext}"
+  ext: GBS
+  name: BottomSolderMaskLayer
   action: "add_header"
   missing_warning: true
 
 # Solder Paste Layers
 TopPaste:
-  ext: "GTP" # Top paste layer
-  output: "{project}_TopPasteMaskLayer.{ext}"
+  ext: GTP
+  name: TopPasteMaskLayer
   action: "add_header"
   missing_warning: false
 
 BottomPaste:
-  ext: "GBP" # Bottom paste layer
-  output: "{project}_BottomPasteMaskLayer.{ext}"
+  ext: GBP
+  name: BottomPasteMaskLayer
   action: "add_header"
   missing_warning: false
 
@@ -113,11 +112,5 @@ DrillNPTH_GerberX2:
 DrillReport:
   ext: "TXT" # Drill report text file
   output: "{project}_DrillReport.{ext}"
-  action: "include"
-  missing_warning: false
-
-Custom:
-  ext: "" # No fixed extension (preserve original file extension)
-  output: "{project}_Custom"
   action: "include"
   missing_warning: false

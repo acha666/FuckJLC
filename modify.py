@@ -187,11 +187,11 @@ def main():
     dry_run = args.dry_run
     force = args.force
 
-    # 2. 读取 filetype 默认值
-    filetype_defaults: Dict[str, Dict[str, Any]] = {}
+    # 2. 读取 filetype
+    filetypes: Dict[str, Dict[str, Any]] = {}
     if os.path.exists(defaults_file):
         try:
-            filetype_defaults = load_yaml(defaults_file)
+            filetypes = load_yaml(defaults_file)
         except Exception:
             pass
 
@@ -210,12 +210,11 @@ def main():
         if not isinstance(entry, dict):
             continue
         pattern = entry.get("filename_pattern")
-        ft = entry.get("filetype")
-        if not pattern or not ft:
+        ft_field = entry.get("filetype")
+        if not pattern or not ft_field:
             warning("跳过缺少 filename_pattern 或 filetype 的规则。")
             continue
 
-        merged = {**filetype_defaults.get(ft, {}), **entry}
         try:
             filename_regex = re.compile(pattern, flags=re.IGNORECASE)
         except re.error as exc:
@@ -223,22 +222,41 @@ def main():
             continue
 
         content_regex = None
-        if merged.get("content_pattern"):
+        if entry.get("content_pattern"):
             try:
                 content_regex = re.compile(merged["content_pattern"])
             except re.error as exc:
                 warning(f"无效 content_pattern: {exc}，已忽略。")
-                content_regex = None
+
+        # 处理 filetype
+        # 3-A 字符串 → 引用
+        if isinstance(ft_field, str):
+            ft_name = ft_field
+            if ft_name not in filetypes:
+                error(f"规则引用了未定义的 filetype: {ft_name}")
+                sys.exit(1)
+
+        # 3-B 对象 → 新增/覆盖
+        elif isinstance(ft_field, dict):
+            ft_name = ft_field.get("name")
+            if not ft_name:
+                error("自定义 filetype 缺少 name 字段。")
+                sys.exit(1)
+            base = filetypes.get(ft_name, {})
+            filetypes[ft_name] = {
+                **base,
+                **{k: v for k, v in ft_field.items() if k != "name"},
+            }
+
+        else:
+            error("filetype 字段类型非法，应为字符串或对象。")
+            sys.exit(1)
 
         rules.append(
             {
-                "filetype": ft,
+                "filetype": ft_name,
                 "filename_regex": filename_regex,
                 "content_regex": content_regex,
-                "action": merged.get("action", "include"),
-                "output_tpl": merged.get("output"),
-                "ext": merged.get("ext"),
-                "missing_warning": bool(merged.get("missing_warning", False)),
             }
         )
 
@@ -277,19 +295,30 @@ def main():
             continue
 
         rule = matches[0]
-        ft = rule["filetype"]
-        action = rule["action"]
-        output_tpl = rule["output_tpl"]
-        ext = rule["ext"]
+        ft_field = rule["filetype"]
+        props = filetypes.get(ft_field, {})
 
         if rule["content_regex"] and not _file_content_matches(
             src_path, rule["content_regex"], read_lines
         ):
             continue
 
-        rel_out = output_tpl.format(project=project, filetype=ft, ext=(ext or ""))
-        if ext is None:
-            rel_out += os.path.splitext(src_path)[1]
+        # filetype 属性
+        action = props.get("action", "include")
+        ext_cfg = props.get("ext")
+        layer_name = props.get("layer_name", ft_field)
+        default_tpl = "{project}_{layer_name}.{ext}"
+        output_tpl = props.get("output", default_tpl)
+
+        # ext
+        ext_final = (ext_cfg or os.path.splitext(src_path)[1].lstrip(".") or "").lstrip(
+            "."
+        )
+
+        rel_out = output_tpl.format(
+            project=project, layer_name=layer_name, ext=ext_final
+        )
+
         dest_path = os.path.join(output_base_dir, rel_out)
         dest_dir = os.path.dirname(dest_path)
         if dest_dir and not os.path.isdir(dest_dir):
@@ -299,7 +328,8 @@ def main():
                 os.makedirs(dest_dir, exist_ok=True)
 
         if action == "exclude":
-            info(f"排除文件: {src_path} (类型 {ft})")
+            info(f"排除文件: {src_path} (类型 {ft_field})")
+            processed_types.add(ft_field)
             continue
 
         if os.path.exists(dest_path) and not force:
@@ -307,8 +337,10 @@ def main():
             continue
 
         if dry_run:
-            info(f"[DRY-RUN] {src_path} -> {dest_path} (类型 {ft}, action {action})")
-            processed_types.add(ft)
+            info(
+                f"[DRY-RUN] {src_path} -> {dest_path} (类型 {ft_field}, action {action})"
+            )
+            processed_types.add(ft_field)
         else:
             try:
                 if action == "add_header":
@@ -323,16 +355,16 @@ def main():
                 else:
                     shutil.copyfile(src_path, dest_path)
                 success(
-                    f"已处理 '{src_path}' -> '{dest_path}' (类型 {ft}, action: {action})"
+                    f"已处理 '{src_path}' -> '{dest_path}' (类型 {ft_field}, action: {action})"
                 )
-                processed_types.add(ft)
+                processed_types.add(ft_field)
             except Exception as e:
                 error(f"处理文件 '{src_path}' 时出错: {e}")
 
     # 5. 检查必需文件类型缺失
-    for ft, props in filetype_defaults.items():
-        if props.get("missing_warning") and ft not in processed_types:
-            warning(f"未处理文件类型 '{ft}'。")
+    for ft_field, props in filetypes.items():
+        if props.get("missing_warning") and ft_field not in processed_types:
+            warning(f"未处理文件类型 '{ft_field}'。")
 
     # 6. 可选文档文件
     if text_file_name and text_file_content is not None:

@@ -36,38 +36,53 @@ python3 modify.py \
 
 * `modify.py` 脚本主文件
 * `config.yml` 通用配置信息
-* `rules/*.yml` 针对不同软件 Gerber 的识别规则
+* `rules/*.yml` 针对不同软件 Gerber 的匹配规则
 * `filetype_defaults.yml` 针对不同 Gerber 层的默认处理逻辑
 
-# 规则文件
+# 规则文件（`rules/*.yml`）
 
-规则文件是一个 YAML 文件，指定用于把输入文件匹配为具体 Gerber 层或文件作用的规则
+规则文件是一个 YAML 文件，只负责把输入文件映射到某个 `filetype`，其余处理逻辑完全来自 filetype 定义。
 
 示例：
 
 ```yaml
-# Gerber 文件只需匹配到内置的文件类型，将套用内置的默认处理逻辑
-- filename_pattern: "^.*\\.GTL$"
-  filetype: TopLayer
+# 1) 直接引用已有 filetype —— 顶层铜层
+- filename_pattern: '^.*-F_Cu\\.gbr$'
+  filetype: TopLayer            # 脚本将在 defaults 中查找 TopLayer 的处理方式
 
-# 钻孔文件以及钻孔映射文件可能需要自定义输出规则
-- filename_pattern: "^.*\\.TXT$"
-  filetype: Custom_Drill
-  content_pattern: "^M48" # 仅匹配以 M48 开头的文件
-  action: include # 不添加文件头
-  missing_warning: true # 匹配不到时发出警告
-  output: '{project}_DrillDrawing.DRL' # 自定义输出文件名
+# 2) 新增或覆盖 filetype —— 钻孔映射图
+- filename_pattern: '.*-PTH-drl_map\.gbr$'
+  content_pattern: 'FileFunction,Drillmap'    # 仅匹配 Gerber X2 格式的钻孔映射
+  filetype: 
+    name: DrillMapping_PTH                    # 新 filetype 名（或覆盖同名）
+    action: include                           # 此处可写 filetype 级别的 action
+    ext: "GBR"                                # 强制扩展名
+    output: "{project}_DrillMapping_PTH.{ext}"
+    missing_warning: false
 ```
 
-| 字段               | 必需  | 作用                                 |
-| :----------------- | :---: | :----------------------------------- |
-| `filename_pattern` |   ✅   | 文件名正则 (Python RE)               |
-| `filetype`         |   ✅   | 自定义的文件类型名，与 defaults 对应 |
-| `action`           |   ❌   | `include` / `add_header` / `exclude` |
-| `output`           |   ❌   | 输出模板，优先于 defaults            |
-| `ext`              |   ❌   | 指定扩展名，占位符 `{ext}` 时必需    |
-| `content_pattern`  |   ❌   | 对文件内容再匹配 (Python RE)         |
-| `missing_warning`  |   ❌   | 该类型缺失时是否报警                 |
+| 字段               | 必需  | 说明                                             |
+| ------------------ | :---: | ------------------------------------------------ |
+| `filename_pattern` |   ✅   | 文件名正则（Python RE）                          |
+| `content_pattern`  |   ❌   | （可选）再按文件内容匹配，常用于区分同扩展名文件 |
+| `filetype`         |   ✅   | - **字符串**：引用现有 filetype                  |
+|                    |       | - **对象**：见上述示例，用于新增/覆盖配置        |
+
+# Filetype 文件（`filetype_defaults.yml`）
+
+每个 filetype 都可被规则文件覆盖
+
+示例：
+
+```yaml
+Outline:
+  ext: GKO
+  layer_name: BoardOutlineLayer  # 用于默认输出文件名
+  action: add_header             # include / add_header / exclude
+  missing_warning: true          # 如缺失则报警
+  # 可选，自定义输出模板；未写时使用默认 {project}_{layer_name}.{ext}
+  # output: "{project}_{layer_name}.{ext}"
+```
 
 # 提示
 
@@ -84,8 +99,6 @@ python3 modify.py \
 # 工作原理
 
 脚本将会将你的 Gerber 重命名为立创 EDA 的命名格式，并在 Gerber 文件的头部添加立创 EDA 的注释信息
-
-除此之外，脚本不会做任何处理
 
 **低调使用**
 
