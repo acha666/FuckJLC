@@ -224,7 +224,7 @@ def main():
         content_regex = None
         if entry.get("content_pattern"):
             try:
-                content_regex = re.compile(merged["content_pattern"])
+                content_regex = re.compile(entry["content_pattern"])
             except re.error as exc:
                 warning(f"无效 content_pattern: {exc}，已忽略。")
 

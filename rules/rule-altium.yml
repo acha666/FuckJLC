@@ -1,0 +1,143 @@
+# AD25 导出要点
+# 1. Gerber 导出扩展名需为 .gbr
+# 2. Gerber 不导出 Mechanical Keep-out Pads
+# 3. Gerber 不导出 Drill Drawing 和 Drill Guide
+# 4. NC Drill 勾选 Generate separate NC Drill files for plated & non-plated holes
+# 5. NC Drill 不勾选 Generate separate NC Drill files for VIA Features
+# 6. NC Drill 不勾选 Generate EIA Binary Drill File (.DRL)
+
+
+# ——— 顶 / 底铜 ———
+- filename_pattern: '.*_Copper_Signal_Top\.gbr$'
+  filetype: TopLayer
+
+- filename_pattern: '.*_Copper_Signal_Bot\.gbr$'
+  filetype: BottomLayer
+
+# ——— 内层铜 ———
+- filename_pattern: '.*_Copper_Signal_1\.gbr$'
+  filetype: InnerLayer1
+
+- filename_pattern: '.*_Copper_Signal_2\.gbr$'
+  filetype: InnerLayer2
+
+- filename_pattern: '.*_Copper_Signal_3\.gbr$'
+  filetype: InnerLayer3
+
+- filename_pattern: '.*_Copper_Signal_4\.gbr$'
+  filetype: InnerLayer4
+
+# ——— 丝印 ———
+- filename_pattern: '.*_Legend_Top\.gbr$'
+  filetype: TopSilk
+
+- filename_pattern: '.*_Legend_Bot\.gbr$'
+  filetype: BottomSilk
+
+# ——— 阻焊 ———
+- filename_pattern: '.*_SolderMask_Top\.gbr$'
+  filetype: TopSolderMask
+
+- filename_pattern: '.*_SolderMask_Bot\.gbr$'
+  filetype: BottomSolderMask
+
+# ——— 焊膏 ———
+- filename_pattern: '.*_Paste_Top\.gbr$'
+  filetype: TopPaste
+
+- filename_pattern: '.*_Paste_Bot\.gbr$'
+  filetype: BottomPaste
+
+# ——— 焊盘 ———
+- filename_pattern: '.*_Pads_Top\.gbr$'
+  filetype:
+    name: TopPads
+    action: exclude
+
+- filename_pattern: '.*_Pads_Bot\.gbr$'
+  filetype:
+    name: BottomPads
+    action: exclude
+
+# ——— 外形 ———
+- filename_pattern: '.*_Profile\.gbr$'
+  filetype: Outline
+
+# ——— 钻孔 (Excellon)  ———
+- filename_pattern: '.*-RoundHoles-Plated\.TXT$'
+  # content_pattern: '(?i)^M48'
+  filetype:
+    name: RoundPlatedDrill
+    action: include
+    ext: DRL
+    missing_warning: true
+
+- filename_pattern: '.*-SlotHoles-Plated\.TXT$'
+  # content_pattern: '(?i)^M48'
+  filetype:
+    name: SlotPlatedDrill
+    action: include
+    ext: DRL
+    missing_warning: true
+
+- filename_pattern: '.*-RoundHoles-NonPlated\.TXT$'
+  # content_pattern: '(?i)^M48'
+  filetype:
+    name: RoundNonPlatedDrill
+    action: include
+    ext: DRL
+    missing_warning: true
+
+- filename_pattern: '.*-SlotHoles-NonPlated\.TXT$'
+  # content_pattern: '(?i)^M48'
+  filetype:
+    name: SlotNonPlatedDrill
+    action: include
+    ext: DRL
+    missing_warning: true
+
+# ——— 排除  ———
+- filename_pattern: '^StatusReport\.Txt$'
+  filetype:
+    name: StatusReport
+    action: exclude 
+
+- filename_pattern: '.*\.apr$'
+  filetype:
+    name: Aperture
+    action: exclude
+
+- filename_pattern: '^Design Rule Check - .*\.html$'
+  filetype:
+    name: DesignRuleCheckHtml
+    action: exclude
+
+- filename_pattern: '^Design Rule Check - .*\.drc$'
+  filetype:
+    name: DesignRuleCheck
+    action: exclude
+
+- filename_pattern: '.*\.DRR$'
+  filetype:
+    name: DrillReport
+    action: exclude
+
+- filename_pattern: '.*\.EXTREP$'
+  filetype:
+    name: EXTREP
+    action: exclude
+
+- filename_pattern: '.*\.LDP$'
+  filetype:
+    name: LDP
+    action: exclude
+
+- filename_pattern: '.*\.REP$'
+  filetype:
+    name: REP
+    action: exclude
+
+- filename_pattern: '.*-macro\.APR_LIB$'
+  filetype:
+    name: APR_LIB
+    action: exclude
