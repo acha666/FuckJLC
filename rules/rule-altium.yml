@@ -80,6 +80,7 @@
     ext: DRL
     missing_warning: true
 
+# 不存在非金属化孔或非金属化孔画在 Profile 上的文档不会出现以下文件：
 - filename_pattern: '.*-RoundHoles-NonPlated\.TXT$'
   # content_pattern: '(?i)^M48'
   filetype:
@@ -95,6 +96,24 @@
     action: include
     ext: DRL
     missing_warning: true
+
+# 对于不存在槽孔的文档，只会出现如下文件：
+# 为避免与上方规则重复请手动切换
+# - filename_pattern: '.*-Plated\.TXT$'
+#   # content_pattern: '(?i)^M48'
+#   filetype:
+#     name: PlatedDrill
+#     action: include
+#     ext: DRL
+#     missing_warning: false
+
+# - filename_pattern: '.*-NonPlated\.TXT$'
+#   # content_pattern: '(?i)^M48'
+#   filetype:
+#     name: NonPlatedDrill
+#     action: include
+#     ext: DRL
+#     missing_warning: false
 
 # ——— 排除  ———
 - filename_pattern: '^StatusReport\.Txt$'
